@@ -82,7 +82,7 @@ func RestrictToCustom(client *Auth0Client, profileContextKey string, extractor T
 				return
 			}
 
-			if data.contains(roleDict) {
+			if data.ContainsAnyRole(roleDict) {
 				c.Set(profileContextKey, data)
 				c.Next()
 				return

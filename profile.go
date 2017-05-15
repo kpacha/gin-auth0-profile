@@ -20,7 +20,9 @@ type Profile struct {
 	} `json:"app_metadata"`
 }
 
-func (a *Profile) contains(roleDict map[string]struct{}) bool {
+// ContainsAnyRole returns true if the profile contains any of the received roles in the
+// app_metadata section
+func (a *Profile) ContainsAnyRole(roleDict map[string]struct{}) bool {
 	for _, r := range a.AppMetadata.Roles {
 		if _, ok := roleDict[r]; ok {
 			return true
