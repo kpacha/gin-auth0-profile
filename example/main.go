@@ -23,7 +23,7 @@ func main() {
 	cacheTTL := flag.Duration("cache", defaultCacheTTL, "TTL for the auth0 client cache")
 	flag.Parse()
 
-	jwtMiddleware := auth0profile.RestrictTo(auth0profile.NewAuth0Client(*auth0SubDomain, *cacheTTL, *cacheTTL))
+	jwtMiddleware := auth0profile.RestrictTo(auth0profile.JWTInfo(*auth0SubDomain, *cacheTTL, *cacheTTL))
 
 	router := gin.Default()
 	router.Use(jwtMiddleware(strings.Split(*roles, ",")...))

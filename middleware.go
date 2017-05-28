@@ -8,12 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	// Auth0ProfileContextKey is the key for storing the profile into the request context
-	Auth0ProfileContextKey = "auth0-user"
-	// Auth0TokenInfoPattern is the pattern for building the url of the tokeninfo endpoint
-	Auth0TokenInfoPattern = "https://%s.auth0.com/tokeninfo"
-)
+// Auth0ProfileContextKey is the key for storing the profile into the request context
+const Auth0ProfileContextKey = "auth0-user"
 
 // ErrUnauthorized is the error used when the scope of profile doesn't match the restrictions
 var ErrUnauthorized = fmt.Errorf("Error: unauthorized JWT")
@@ -39,6 +35,15 @@ func ContextTokenExtractor(key string) TokenExtractor {
 		}
 		token := v.([]byte)
 		return string(token)
+	}
+}
+
+// ToContext sets the profile in the request context so it can be used by the next comonents in the chain
+func ToContext(client Auth0Client, profileContextKey string, extractor TokenExtractor) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		data, _ := client.Get(extractor(c))
+		c.Set(profileContextKey, data)
+		c.Next()
 	}
 }
 

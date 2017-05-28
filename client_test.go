@@ -76,7 +76,7 @@ func TestAuth0Client_ok(t *testing.T) {
 	server := httptest.NewServer(dummyHandler{t, jwt, http.StatusOK, defaultBody})
 	defer server.Close()
 
-	client := auth0Client{server.URL}
+	client := auth0Client{"id_token", server.URL}
 	profile, err := client.Get(jwt)
 	if err != nil {
 		t.Error("Error getting the profile from the client. Got:", err.Error())
@@ -91,7 +91,7 @@ func TestAuth0Client_koResponse(t *testing.T) {
 	server := httptest.NewServer(dummyHandler{t, jwt, http.StatusInternalServerError, defaultBody})
 	defer server.Close()
 
-	client := auth0Client{server.URL}
+	client := auth0Client{"id_token", server.URL}
 	if _, err := client.Get(jwt); err != ErrUnauthorized {
 		t.Error("Unexpected error getting the profile from the client. Got:", err)
 	}
@@ -102,7 +102,7 @@ func TestAuth0Client_wrongResponse(t *testing.T) {
 	server := httptest.NewServer(dummyHandler{t, jwt, http.StatusOK, ""})
 	defer server.Close()
 
-	client := auth0Client{server.URL}
+	client := auth0Client{"id_token", server.URL}
 	if _, err := client.Get(jwt); err != io.EOF {
 		t.Error("Unexpected error getting the profile from the client. Got:", err)
 	}
